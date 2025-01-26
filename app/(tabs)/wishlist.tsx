@@ -11,8 +11,10 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
-import DateTimePicker, {DateType} from 'react-native-ui-datepicker';
-import dayjs from 'dayjs';
+import DateTimePicker, { DateType } from "react-native-ui-datepicker";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+
+import dayjs from "dayjs";
 
 type Wish = {
 	id: string;
@@ -32,8 +34,9 @@ export default function WishlistScreen() {
 		completed: false,
 		deadline: null,
 	});
-	const [isFormDisabled, setIsFormDisabled] = useState(false)
-	const [date, setDate] = useState(dayjs());
+	const [isFormDisabled, setIsFormDisabled] = useState(false);
+	const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
+	const [showDeadlineDatePicker, setShowDeadlineDatePicker] = useState(false);
 
 	const handleAddWish = () => {
 		setIsModalVisible(true);
@@ -54,9 +57,9 @@ export default function WishlistScreen() {
 	};
 
 	const handleWishTitleUpdate = (newTitle: string) => {
-		setWish({ ...wish, title: newTitle })
-		setIsFormDisabled(newTitle.trim().length === 0)
-	}
+		setWish({ ...wish, title: newTitle });
+		setIsFormDisabled(newTitle.trim().length === 0);
+	};
 
 	return (
 		<ThemedView style={styles.container}>
@@ -116,14 +119,29 @@ export default function WishlistScreen() {
 								value={wish.description || ""}
 								onChangeText={(text) => setWish({ ...wish, description: text })}
 							/>
-							<DateTimePicker
-								mode="single"
-								date={date}
-								onChange={(params: {date: DateType}) => setDate(params!.date)}
-							/>
+							<View style={styles.datePicker}>
+								<BouncyCheckbox
+									textStyle={styles.checkbox}
+									text="Has Deadline"
+									onPress={(isChecked: boolean) => {}}
+								/>
+								<DateTimePicker
+									mode="single"
+									date={date}
+									onChange={(params) => {
+										if (params.date) {
+											setDate(dayjs(params.date));
+										}
+									}}
+								/>
+							</View>
+
 							<View style={styles.buttonContainer}>
 								<TouchableOpacity
-									style={[styles.addWishButton, isFormDisabled && styles.disabledButton ]}
+									style={[
+										styles.addWishButton,
+										isFormDisabled && styles.disabledButton,
+									]}
 									onPress={() => {
 										handleSaveWish();
 									}}
@@ -222,20 +240,20 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		padding: 10,
 		width: "50%",
-		alignItems: 'center'
+		alignItems: "center",
 	},
 	closeButton: {
 		backgroundColor: "lightgray",
 		borderRadius: 15,
 		padding: 10,
 		width: "50%",
-		alignItems: 'center'
+		alignItems: "center",
 	},
 	disabledButton: {
-		backgroundColor: 'red',
+		backgroundColor: "red",
 	},
 	disabledText: {
-		color: '#ECEFF1',
+		color: "#ECEFF1",
 	},
 	buttonText: {
 		color: "white",
@@ -249,5 +267,11 @@ const styles = StyleSheet.create({
 		width: "80%",
 		marginVertical: 10,
 		alignItems: "center",
+	},
+	datePicker: {
+		paddingHorizontal: 50,
+	},
+	checkbox: {
+		textDecorationLine: "none",
 	},
 });
