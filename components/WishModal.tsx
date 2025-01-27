@@ -27,8 +27,11 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 		id: "",
 		title: "",
 		description: null,
-		completed: false,
+		purchased: false,
 		deadline: null,
+		price: null,
+		link: null,
+		image: null,
 	});
 	const [isFormDisabled, setIsFormDisabled] = useState(false);
 	const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
@@ -54,7 +57,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 				id: "",
 				title: "",
 				description: null,
-				completed: false,
+				purchased: false,
 				deadline: null,
 			});
 		}
@@ -86,7 +89,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 					<View style={styles.datePickerContainer}>
 						<BouncyCheckbox
 							textStyle={styles.checkbox}
-							isChecked={wish.completed}
+							isChecked={wish.purchased}
 							onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
 							text="Has deadline"
 							size={25}
