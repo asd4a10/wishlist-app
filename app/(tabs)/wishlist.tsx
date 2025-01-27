@@ -15,6 +15,7 @@ import DateTimePicker, { DateType } from "react-native-ui-datepicker";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 import dayjs from "dayjs";
+import { WishModal } from "@/components/WishModal";
 
 type Wish = {
 	id: string;
@@ -42,18 +43,9 @@ export default function WishlistScreen() {
 		setIsModalVisible(true);
 	};
 
-	const handleSaveWish = () => {
-		if (wish.title) {
-			setWishList([...wishList, { ...wish, id: Date.now().toString() }]);
-			setWish({
-				id: "",
-				title: "",
-				description: null,
-				completed: false,
-				deadline: null,
-			});
-			setIsModalVisible(false);
-		}
+	const handleSaveWish = (newWish: Wish) => {
+		setWishList([...wishList, newWish]);
+		setIsModalVisible(false);
 	};
 
 	const handleWishTitleUpdate = (newTitle: string) => {
@@ -90,77 +82,11 @@ export default function WishlistScreen() {
 				<Text style={styles.floatingButtonText}>+</Text>
 			</TouchableOpacity>
 			{/* TODO: Add wish modal */}
-			<Modal
-				animationType="slide"
-				visible={isModalVisible}
-				onRequestClose={() => setIsModalVisible(false)}
-				presentationStyle="pageSheet"
-			>
-				<KeyboardAvoidingView behavior={"padding"}>
-					<ThemedView style={styles.modalContent}>
-						<ScrollView
-							contentContainerStyle={styles.scrollContent}
-							showsVerticalScrollIndicator={false}
-						>
-							<ThemedText style={styles.modalTitle}>Add a Wish</ThemedText>
-							<TextInput
-								style={styles.input}
-								placeholder="Title"
-								placeholderTextColor="gray"
-								value={wish.title}
-								onChangeText={(text) => handleWishTitleUpdate(text)}
-							/>
-							<TextInput
-								style={[styles.input, styles.textArea]}
-								placeholder="Description (optional)"
-								placeholderTextColor="gray"
-								multiline
-								numberOfLines={4}
-								value={wish.description || ""}
-								onChangeText={(text) => setWish({ ...wish, description: text })}
-							/>
-							<View style={styles.datePicker}>
-								<BouncyCheckbox
-									textStyle={styles.checkbox}
-									text="Has Deadline"
-									onPress={(isChecked: boolean) => {}}
-								/>
-								<DateTimePicker
-									mode="single"
-									date={date}
-									onChange={(params) => {
-										if (params.date) {
-											setDate(dayjs(params.date));
-										}
-									}}
-								/>
-							</View>
-
-							<View style={styles.buttonContainer}>
-								<TouchableOpacity
-									style={[
-										styles.addWishButton,
-										isFormDisabled && styles.disabledButton,
-									]}
-									onPress={() => {
-										handleSaveWish();
-									}}
-									disabled={isFormDisabled}
-									activeOpacity={isFormDisabled ? 1 : 0.7}
-								>
-									<Text style={styles.buttonText}>Add Wish</Text>
-								</TouchableOpacity>
-								<TouchableOpacity
-									style={styles.closeButton}
-									onPress={() => setIsModalVisible(false)}
-								>
-									<Text style={styles.buttonText}>Close</Text>
-								</TouchableOpacity>
-							</View>
-						</ScrollView>
-					</ThemedView>
-				</KeyboardAvoidingView>
-			</Modal>
+			<WishModal
+				isVisible={isModalVisible}
+				onClose={() => setIsModalVisible(false)}
+				onSave={handleSaveWish}
+			/>
 		</ThemedView>
 	);
 }
