@@ -6,6 +6,7 @@ import { Text, TouchableOpacity } from "react-native";
 
 import { WishModal } from "@/components/WishModal";
 import { Wish } from "@/types/wish";
+import { WishList } from "@/components/wishlist/WishList";
 export default function WishlistScreen() {
 	const [wishList, setWishList] = useState<Wish[]>([]);
 	const [isModalVisible, setIsModalVisible] = useState(false);
@@ -22,22 +23,18 @@ export default function WishlistScreen() {
 	return (
 		<ThemedView style={styles.container}>
 			<ThemedText style={styles.title}>Wishlist & Roadmap</ThemedText>
-			<ThemedView
+			{/* <ThemedView
 				style={styles.separator}
 				lightColor="#eee"
 				darkColor="rgba(255,255,255,0.1)"
-			/>
+			/> */}
 			{wishList.length == 0 && (
 				<ThemedText>
 					Your future features and wishes will appear here!
 				</ThemedText>
 			)}
 			{/* TODO: Display wish list */}
-			{wishList.map((wish) => (
-				<View style={styles.wishItem} key={wish.id}>
-					<ThemedText>{wish.title}</ThemedText>
-				</View>
-			))}
+			<WishList wishes={wishList} />
 			{/* floating button */}
 			<TouchableOpacity
 				style={styles.floatingButton}
@@ -61,14 +58,15 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "center",
+		paddingTop: 70,
+		// justifyContent: "center",
 	},
 	title: {
 		fontSize: 20,
 		fontWeight: "bold",
 	},
 	separator: {
-		marginVertical: 30,
+		marginTop: 5,
 		height: 1,
 		width: "80%",
 	},

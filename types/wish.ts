@@ -2,9 +2,10 @@ export type Wish = {
 	id: string;
 	title: string;
 	description: string | null;
-	purchased: boolean;
-	deadline: Date | null;
+	isPurchased: boolean;
+	targetDate: Date | null;
 	price: number | null;
-	link: string | null;
-	image: string | null;
+	productUrl: string[];
+	imageUrl: string | null;
+	createdAt: Date;
 };

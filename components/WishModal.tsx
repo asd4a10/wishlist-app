@@ -19,17 +19,21 @@ type WishModalProps = {
 	onSave: (newWish: Wish) => void;
 };
 
+const initialWish: Wish = {
+	id: "",
+	title: "",
+	description: "This is a test description",
+	isPurchased: false,
+	targetDate: null,
+	price: 10,
+	productUrl: ["https://www.google.com"],
+	imageUrl:
+		"https://therunningoutlet.co.uk/wp-content/uploads/2024/04/garmin-forerunner-165-20-front.jpg",
+	createdAt: new Date(),
+};
+
 export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
-	const [wish, setWish] = useState<Wish>({
-		id: "",
-		title: "",
-		description: null,
-		purchased: false,
-		deadline: null,
-		price: null,
-		link: null,
-		image: null,
-	});
+	const [wish, setWish] = useState<Wish>(initialWish);
 	const [isFormDisabled, setIsFormDisabled] = useState(false);
 	const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
 	const [isDeadlineVisible, setIsDeadlineVisible] = useState(false);
@@ -43,23 +47,14 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 		setWish({ ...wish, description: newDescription });
 	};
 
-	const handleWishDeadlineUpdate = (newDeadline: Date | null) => {
-		setWish({ ...wish, deadline: newDeadline });
+	const handleWishTargetDateUpdate = (newTargetDate: Date | null) => {
+		setWish({ ...wish, targetDate: newTargetDate });
 	};
 
 	const handleSave = () => {
 		if (wish.title) {
 			onSave({ ...wish, id: Date.now().toString() });
-			setWish({
-				id: "",
-				title: "",
-				description: null,
-				purchased: false,
-				deadline: null,
-				price: null,
-				link: null,
-				image: null,
-			});
+			setWish(initialWish);
 		}
 	};
 
@@ -89,7 +84,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 					<View style={styles.datePickerContainer}>
 						<BouncyCheckbox
 							textStyle={styles.checkbox}
-							isChecked={wish.purchased}
+							isChecked={wish.isPurchased}
 							onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
 							text="Has deadline"
 							size={25}
@@ -100,8 +95,8 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 						/>
 						{isDeadlineVisible && (
 							<DateTimePicker
-								date={wish.deadline}
-								onChange={(params) => handleWishDeadlineUpdate(params.date)}
+								date={wish.targetDate}
+								onChange={(params) => handleWishTargetDateUpdate(params.date)}
 								mode="single"
 							/>
 						)}
