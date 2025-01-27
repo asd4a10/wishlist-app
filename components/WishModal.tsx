@@ -1,15 +1,12 @@
 import {
 	KeyboardAvoidingView,
 	Modal,
-	ScrollView,
 	StyleSheet,
 	TextInput,
 	View,
 	TouchableOpacity,
 	Text,
 } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import DateTimePicker from "react-native-ui-datepicker";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import dayjs from "dayjs";
@@ -19,7 +16,7 @@ import { useState } from "react";
 type WishModalProps = {
 	isVisible: boolean;
 	onClose: () => void;
-	onSave: (wish: Wish) => void;
+	onSave: (newWish: Wish) => void;
 };
 
 export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
@@ -59,6 +56,9 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 				description: null,
 				purchased: false,
 				deadline: null,
+				price: null,
+				link: null,
+				image: null,
 			});
 		}
 	};
@@ -121,43 +121,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
-	},
-	floatingButton: {
-		position: "absolute",
-		bottom: 100,
-		right: 20,
-		width: 70,
-		height: 70,
-		borderRadius: "100%",
-		backgroundColor: "purple",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	floatingButtonText: {
-		color: "white",
-		fontSize: 24,
-		fontWeight: "bold",
-	},
-	scrollContent: {
-		flexGrow: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
 	modalContent: {
-		// flex: 1,
 		flexDirection: "column",
 		alignItems: "center",
 		justifyContent: "center",
@@ -168,7 +132,6 @@ const styles = StyleSheet.create({
 	modalTitle: {
 		fontSize: 20,
 		fontWeight: "bold",
-		// color: "black",
 	},
 	input: {
 		height: 40,
@@ -176,13 +139,7 @@ const styles = StyleSheet.create({
 		borderColor: "gray",
 		borderWidth: 1,
 		borderRadius: 15,
-		// marginBottom: 10,
 		paddingHorizontal: 10,
-		// marginVertical: 10,
-	},
-	textArea: {
-		height: 60,
-		textAlignVertical: "top",
 	},
 	buttonContainer: {
 		flexDirection: "row",
@@ -205,31 +162,14 @@ const styles = StyleSheet.create({
 		width: "50%",
 		alignItems: "center",
 	},
-	disabledButton: {
-		backgroundColor: "red",
-	},
-	disabledText: {
-		color: "#ECEFF1",
-	},
 	buttonText: {
 		color: "white",
 		fontSize: 16,
 		fontWeight: "bold",
 	},
-	wishItem: {
-		backgroundColor: "lightgray",
-		borderRadius: 15,
-		padding: 10,
-		width: "80%",
-		marginVertical: 10,
-		alignItems: "center",
-	},
 	datePickerContainer: {
 		width: "100%",
 		paddingHorizontal: "10%",
-	},
-	datePicker: {
-		paddingHorizontal: 50,
 	},
 	checkbox: {
 		textDecorationLine: "none",

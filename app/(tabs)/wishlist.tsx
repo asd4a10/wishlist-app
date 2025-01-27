@@ -1,43 +1,14 @@
-import {
-	Button,
-	KeyboardAvoidingView,
-	Modal,
-	ScrollView,
-	StyleSheet,
-	TextInput,
-	View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
-import DateTimePicker, { DateType } from "react-native-ui-datepicker";
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 
-import dayjs from "dayjs";
 import { WishModal } from "@/components/WishModal";
-
-type Wish = {
-	id: string;
-	title: string;
-	description: string | null;
-	completed: boolean;
-	deadline: Date | null;
-};
-
+import { Wish } from "@/types/wish";
 export default function WishlistScreen() {
 	const [wishList, setWishList] = useState<Wish[]>([]);
 	const [isModalVisible, setIsModalVisible] = useState(false);
-	const [wish, setWish] = useState<Wish>({
-		id: "",
-		title: "",
-		description: null,
-		completed: false,
-		deadline: null,
-	});
-	const [isFormDisabled, setIsFormDisabled] = useState(false);
-	const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
-	const [showDeadlineDatePicker, setShowDeadlineDatePicker] = useState(false);
 
 	const handleAddWish = () => {
 		setIsModalVisible(true);
@@ -46,11 +17,6 @@ export default function WishlistScreen() {
 	const handleSaveWish = (newWish: Wish) => {
 		setWishList([...wishList, newWish]);
 		setIsModalVisible(false);
-	};
-
-	const handleWishTitleUpdate = (newTitle: string) => {
-		setWish({ ...wish, title: newTitle });
-		setIsFormDisabled(newTitle.trim().length === 0);
 	};
 
 	return (
