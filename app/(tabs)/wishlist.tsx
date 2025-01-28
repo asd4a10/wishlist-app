@@ -22,7 +22,7 @@ export default function WishlistScreen() {
 
 	return (
 		<ThemedView style={styles.container}>
-			<ThemedText style={styles.title}>Wishlist & Roadmap</ThemedText>
+			<ThemedText style={styles.title}>Your Wishlist</ThemedText>
 			{/* <ThemedView
 				style={styles.separator}
 				lightColor="#eee"

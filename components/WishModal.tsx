@@ -23,8 +23,8 @@ const initialWish: Wish = {
 	id: "",
 	title: "",
 	description: "This is a test description",
-	isPurchased: false,
-	targetDate: null,
+	isPurchased: true,
+	targetDate: new Date(),
 	price: 10,
 	productUrl: ["https://www.google.com"],
 	imageUrl:
@@ -51,10 +51,23 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 		setWish({ ...wish, targetDate: newTargetDate });
 	};
 
+	const handleWishPriceUpdate = (newPrice: string) => {
+		setWish({ ...wish, price: parseFloat(newPrice) });
+	};
+
+	const handleWishProductUrlUpdate = (newProductUrl: string) => {
+		setWish({ ...wish, productUrl: newProductUrl.split(",") });
+	};
+
+	const handleWishImageUrlUpdate = (newImageUrl: string) => {
+		setWish({ ...wish, imageUrl: newImageUrl });
+	};
+
 	const handleSave = () => {
 		if (wish.title) {
 			onSave({ ...wish, id: Date.now().toString() });
 			setWish(initialWish);
+			setIsDeadlineVisible(false);
 		}
 	};
 
@@ -80,11 +93,28 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 						onChangeText={handleWishDescriptionUpdate}
 						placeholder="Wish description"
 					/>
-
+					<TextInput
+						style={styles.input}
+						value={wish.price?.toString() || ""}
+						onChangeText={handleWishPriceUpdate}
+						placeholder="Wish price"
+					/>
+					<TextInput
+						style={styles.input}
+						value={wish.productUrl.join(", ") || ""}
+						onChangeText={handleWishProductUrlUpdate}
+						placeholder="Wish product url"
+					/>
+					<TextInput
+						style={styles.input}
+						value={wish.imageUrl || ""}
+						onChangeText={handleWishImageUrlUpdate}
+						placeholder="Wish image url"
+					/>
 					<View style={styles.datePickerContainer}>
 						<BouncyCheckbox
 							textStyle={styles.checkbox}
-							isChecked={wish.isPurchased}
+							isChecked={isDeadlineVisible}
 							onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
 							text="Has deadline"
 							size={25}
@@ -165,6 +195,8 @@ const styles = StyleSheet.create({
 	datePickerContainer: {
 		width: "100%",
 		paddingHorizontal: "10%",
+		flexDirection: "column",
+		alignItems: "center",
 	},
 	checkbox: {
 		textDecorationLine: "none",
