@@ -6,12 +6,14 @@ import {
 	View,
 	TouchableOpacity,
 	Text,
+	ScrollView,
 } from "react-native";
 import DateTimePicker from "react-native-ui-datepicker";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import dayjs from "dayjs";
 import { Wish } from "@/types/wish"; // You'll need to create this type file
 import { useState } from "react";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 type WishModalProps = {
 	isVisible: boolean;
@@ -22,13 +24,12 @@ type WishModalProps = {
 const initialWish: Wish = {
 	id: "",
 	title: "",
-	description: "This is a test description",
-	isPurchased: true,
-	targetDate: new Date(),
-	price: 10,
-	productUrl: ["https://www.google.com"],
-	imageUrl:
-		"https://therunningoutlet.co.uk/wp-content/uploads/2024/04/garmin-forerunner-165-20-front.jpg",
+	description: "",
+	isPurchased: false,
+	targetDate: null,
+	price: null,
+	productUrl: [],
+	imageUrl: "",
 	createdAt: new Date(),
 };
 
@@ -78,85 +79,131 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 			onRequestClose={onClose}
 			presentationStyle="pageSheet"
 		>
-			<KeyboardAvoidingView behavior="padding" style={styles.modalContent}>
-				<View style={styles.modalContent}>
-					<Text style={styles.modalTitle}>Add a Wish</Text>
-					<TextInput
-						style={styles.input}
-						value={wish.title}
-						onChangeText={handleWishTitleUpdate}
-						placeholder="Wish title"
-					/>
-					<TextInput
-						style={styles.input}
-						value={wish.description || ""}
-						onChangeText={handleWishDescriptionUpdate}
-						placeholder="Wish description"
-					/>
-					<TextInput
-						style={styles.input}
-						value={wish.price?.toString() || ""}
-						onChangeText={handleWishPriceUpdate}
-						placeholder="Wish price"
-					/>
-					<TextInput
-						style={styles.input}
-						value={wish.productUrl.join(", ") || ""}
-						onChangeText={handleWishProductUrlUpdate}
-						placeholder="Wish product url"
-					/>
-					<TextInput
-						style={styles.input}
-						value={wish.imageUrl || ""}
-						onChangeText={handleWishImageUrlUpdate}
-						placeholder="Wish image url"
-					/>
-					<View style={styles.datePickerContainer}>
+			<View style={styles.closeButtonContainer}>
+				<TouchableOpacity style={styles.closeButton} onPress={onClose}>
+					<MaterialIcons name="close" size={20} color="white" />
+				</TouchableOpacity>
+			</View>
+			<ScrollView style={styles.scrollView}>
+				<KeyboardAvoidingView behavior="padding" style={styles.modalContent}>
+					<View style={styles.modalContent}>
+						{/* <Text style={styles.modalTitle}>Add a Wish</Text> */}
+						<Text style={styles.wishTitleText}>What do you want?</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.title}
+							onChangeText={handleWishTitleUpdate}
+							placeholder="Macbook Pro"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Describe it</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.description || ""}
+							onChangeText={handleWishDescriptionUpdate}
+							placeholder="16GB RAM, 1TB SSD, M3 chip (optional)"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Price</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.price?.toString() || ""}
+							onChangeText={handleWishPriceUpdate}
+							placeholder="$1000 (optional)"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Product URL</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.productUrl.join(", ") || ""}
+							onChangeText={handleWishProductUrlUpdate}
+							placeholder="https://www.amazon.com/products/1234567890 (optional)"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Image URL</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.imageUrl || ""}
+							onChangeText={handleWishImageUrlUpdate}
+							placeholder="https://www.amazon.com/products/1234567890 (optional)"
+							placeholderTextColor="gray"
+						/>
 						<BouncyCheckbox
 							textStyle={styles.checkbox}
 							isChecked={isDeadlineVisible}
 							onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
-							text="Has deadline"
+							text="Target date"
 							size={25}
-							fillColor="black"
-							iconStyle={{ borderColor: "black" }}
-							innerIconStyle={{ borderWidth: 2 }}
+							fillColor="white"
+							iconStyle={{ borderColor: "white" }}
+							innerIconStyle={{ borderWidth: 2, backgroundColor: "black" }}
 							checkIconImageSource={undefined}
 						/>
-						{isDeadlineVisible && (
-							<DateTimePicker
-								date={wish.targetDate}
-								onChange={(params) => handleWishTargetDateUpdate(params.date)}
-								mode="single"
-							/>
-						)}
+						<View style={styles.datePickerContainer}>
+							{isDeadlineVisible && (
+								<DateTimePicker
+									date={wish.targetDate || new Date()}
+									onChange={(params) => handleWishTargetDateUpdate(params.date)}
+									mode="single"
+									headerButtonColor="white"
+									headerTextStyle={styles.defaultTextStyle}
+									calendarTextStyle={styles.defaultTextStyle}
+									selectedTextStyle={styles.defaultTextStyle}
+									todayTextStyle={styles.defaultTextStyle}
+									weekDaysTextStyle={styles.defaultTextStyle}
+									monthContainerStyle={styles.monthYearContainerStyle}
+									yearContainerStyle={styles.monthYearContainerStyle}
+								/>
+							)}
+						</View>
 					</View>
-					<View style={styles.buttonContainer}>
-						<TouchableOpacity style={styles.addWishButton} onPress={handleSave}>
-							<Text style={styles.buttonText}>Add Wish</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.closeButton} onPress={onClose}>
-							<Text style={styles.buttonText}>Close</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</KeyboardAvoidingView>
+				</KeyboardAvoidingView>
+			</ScrollView>
+			<View style={styles.addWishButtonContainer}>
+				<TouchableOpacity style={styles.addWishButton} onPress={handleSave}>
+					<Text style={styles.addWishButtonText}>add wish</Text>
+				</TouchableOpacity>
+			</View>
 		</Modal>
 	);
 }
 
 const styles = StyleSheet.create({
+	scrollView: {
+		height: "100%",
+		width: "100%",
+		backgroundColor: "black",
+	},
 	modalContent: {
 		flexDirection: "column",
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		height: "100%",
 		width: "100%",
+		paddingHorizontal: "2.5%",
+		paddingTop: "7%",
+		marginHorizontal: "auto",
+		backgroundColor: "black",
 		gap: 10,
 	},
 	modalTitle: {
 		fontSize: 20,
 		fontWeight: "bold",
+	},
+	wishTitleText: {
+		fontSize: 24,
+		fontWeight: "bold",
+		alignSelf: "flex-start",
+		color: "white",
+	},
+	wishTitleInput: {
+		height: 40,
+		width: "100%",
+		borderColor: "white",
+		borderWidth: 1,
+		borderRadius: 15,
+		paddingHorizontal: 10,
+		color: "white",
 	},
 	input: {
 		height: 40,
@@ -166,39 +213,70 @@ const styles = StyleSheet.create({
 		borderRadius: 15,
 		paddingHorizontal: 10,
 	},
-	buttonContainer: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		gap: "2%",
+	addWishButtonContainer: {
+		position: "absolute",
+		bottom: 100,
 		width: "100%",
-		paddingHorizontal: "10%",
+		alignItems: "center",
 	},
 	addWishButton: {
-		backgroundColor: "purple",
-		borderRadius: 15,
-		padding: 10,
+		backgroundColor: "black",
+		borderWidth: 4,
+		borderColor: "green",
+		borderRadius: 20,
+		padding: 5,
 		width: "50%",
 		alignItems: "center",
+	},
+	addWishButtonText: {
+		color: "white",
+		fontSize: 30,
+		fontWeight: "bold",
+	},
+	closeButtonContainer: {
+		position: "absolute",
+		top: 10,
+		alignSelf: "center",
+		zIndex: 2,
+		elevation: 2, // for Android
 	},
 	closeButton: {
-		backgroundColor: "lightgray",
+		width: 30,
+		height: 30,
 		borderRadius: 15,
-		padding: 10,
-		width: "50%",
+		backgroundColor: "black",
+		borderWidth: 2,
+		borderColor: "white",
+		justifyContent: "center",
 		alignItems: "center",
 	},
-	buttonText: {
+	closeButtonText: {
 		color: "white",
-		fontSize: 16,
-		fontWeight: "bold",
+		fontSize: 20,
+		lineHeight: 20,
+		textAlign: "center",
+		marginTop: -2, // Small adjustment for visual centering of the × symbol
 	},
 	datePickerContainer: {
 		width: "100%",
-		paddingHorizontal: "10%",
+		// paddingHorizontal: "10%",
 		flexDirection: "column",
-		alignItems: "center",
+		alignItems: "flex-start",
+		marginBottom: 150,
+		// backgroundColor: "red",
 	},
 	checkbox: {
 		textDecorationLine: "none",
+		color: "white",
+		fontSize: 24,
+		fontWeight: "bold",
+	},
+	defaultTextStyle: {
+		color: "white",
+		fontSize: 24,
+		fontWeight: "bold",
+	},
+	monthYearContainerStyle: {
+		backgroundColor: "black",
 	},
 });

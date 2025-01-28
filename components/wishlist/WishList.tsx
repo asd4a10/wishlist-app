@@ -25,6 +25,11 @@ export function WishList({ wishes }: WishListProps) {
 						<Text style={styles.description}>{wish.description}</Text>
 					)}
 					{wish.price && <Text style={styles.price}>${wish.price}</Text>}
+					{wish.targetDate && (
+						<Text style={styles.date}>
+							Target: {new Date(wish.targetDate).toLocaleDateString()}
+						</Text>
+					)}
 					{wish.productUrl.length > 0 && (
 						<TouchableOpacity
 							onPress={() => Linking.openURL(wish.productUrl[0]!)}
@@ -70,6 +75,11 @@ const styles = StyleSheet.create({
 	price: {
 		fontWeight: "500",
 		marginTop: 8,
+	},
+	date: {
+		color: "#666",
+		marginTop: 8,
+		fontSize: 14,
 	},
 	link: {
 		color: "#007AFF",
