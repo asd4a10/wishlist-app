@@ -23,11 +23,11 @@ const formatDate = (date: Date) => {
 export default function WishListCard({ wish }: WishListCardProps) {
 	return (
 		<View style={styles.card}>
-			{wish.imageUrl && (
+			{/* {wish.imageUrl && (
 				<View style={styles.imageContainer}>
 					<Image source={{ uri: wish.imageUrl }} style={styles.image} />
 				</View>
-			)}
+			)} */}
 			<View style={styles.contentContainer}>
 				<View style={styles.header}>
 					<Text style={styles.title}>{wish.title}</Text>
@@ -60,7 +60,7 @@ export default function WishListCard({ wish }: WishListCardProps) {
 const styles = StyleSheet.create({
 	card: {
 		minWidth: "100%",
-		flexDirection: "row",
+		flexDirection: "column",
 		backgroundColor: "#111",
 		borderRadius: 12,
 		borderWidth: 1,
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 	},
 	imageContainer: {
-		width: 120,
-		height: 120,
+		width: 200,
+		height: 200,
 	},
 	image: {
 		width: "100%",
