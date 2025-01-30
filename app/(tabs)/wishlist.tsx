@@ -7,18 +7,23 @@ import { Text, TouchableOpacity } from "react-native";
 import { WishModal } from "@/components/WishModal";
 import { Wish } from "@/types/wish";
 import { WishList } from "@/components/wishlist/WishList";
+
+const testWish: Wish = {
+	id: "1",
+	title: "Google Pixel 8",
+	description: "Google Pixel 8",
+	isPurchased: false,
+	targetDate: new Date("2025-02-01"),
+	price: 100,
+	productUrl: ["https://www.google.com"],
+	imageUrl:
+		"https://hips.hearstapps.com/hmg-prod/images/google-pixel-9-review-lead-66c8a74805258.jpg?crop=0.669xw:1.00xh;0.166xw,0&resize=1200:*",
+	createdAt: new Date(),
+};
+
 export default function WishlistScreen() {
-	const [wishList, setWishList] = useState<Wish[]>([]);
+	const [wishList, setWishList] = useState<Wish[]>([testWish]);
 	const [isModalVisible, setIsModalVisible] = useState(false);
-
-	const handleAddWish = () => {
-		setIsModalVisible(true);
-	};
-
-	const handleSaveWish = (newWish: Wish) => {
-		setWishList([...wishList, newWish]);
-		setIsModalVisible(false);
-	};
 
 	return (
 		<ThemedView style={styles.container}>
@@ -34,12 +39,12 @@ export default function WishlistScreen() {
 				</ThemedText>
 			)}
 			{/* TODO: Display wish list */}
-			<WishList wishes={wishList} />
+			<WishList wishes={wishList} onAddWish={() => setIsModalVisible(true)} />
 			{/* floating button */}
 			<TouchableOpacity
 				style={styles.floatingButton}
 				onPress={() => {
-					handleAddWish();
+					setIsModalVisible(true);
 				}}
 			>
 				<Text style={styles.floatingButtonText}>+</Text>
@@ -48,7 +53,10 @@ export default function WishlistScreen() {
 			<WishModal
 				isVisible={isModalVisible}
 				onClose={() => setIsModalVisible(false)}
-				onSave={handleSaveWish}
+				onSave={(newWish) => {
+					setWishList([...wishList, newWish]);
+					setIsModalVisible(false);
+				}}
 			/>
 		</ThemedView>
 	);
@@ -58,12 +66,15 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		paddingTop: 70,
+		paddingTop: 80,
+		backgroundColor: "black",
 		// justifyContent: "center",
 	},
 	title: {
-		fontSize: 20,
+		fontSize: 40,
 		fontWeight: "bold",
+		color: "white",
+		lineHeight: 50,
 	},
 	separator: {
 		marginTop: 5,
