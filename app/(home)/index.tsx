@@ -13,14 +13,6 @@ const BG_IMAGE_URL =
 	"https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=1974&auto=format&fit=crop";
 
 export default function HomeScreen() {
-	const signIn = () => {
-		router.push("/(auth)/sign-in");
-	};
-
-	const signUp = () => {
-		router.push("/(auth)/sign-up");
-	};
-
 	return (
 		<>
 			<SignedIn>

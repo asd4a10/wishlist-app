@@ -1,21 +1,38 @@
-import { useClerk } from "@clerk/clerk-expo";
-import * as Linking from "expo-linking";
-import { Button } from "react-native";
+import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
+import { useAuth } from "@clerk/clerk-expo";
+import { ThemedText } from "@/components/ThemedText";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
-export const SignOutButton = () => {
-	const { signOut } = useClerk();
+interface SignOutButtonProps {
+	containerStyle?: ViewStyle;
+}
 
-	const handleSignOut = async () => {
-		try {
-			await signOut();
-			// Redirect to your desired page
-			Linking.openURL(Linking.createURL("/(home)"));
-		} catch (err) {
-			// See https://clerk.com/docs/custom-flows/error-handling
-			// for more info on error handling
-			console.error(JSON.stringify(err, null, 2));
-		}
-	};
+export function SignOutButton({ containerStyle }: SignOutButtonProps) {
+	const { signOut } = useAuth();
 
-	return <Button title="Sign out" onPress={handleSignOut} />;
-};
+	return (
+		<TouchableOpacity
+			onPress={() => signOut()}
+			style={[styles.container, containerStyle]}
+		>
+			<IconSymbol
+				name="rectangle.portrait.and.arrow.right"
+				size={24}
+				color="#ff4444"
+			/>
+			<ThemedText style={styles.text}>Sign Out</ThemedText>
+		</TouchableOpacity>
+	);
+}
+
+const styles = StyleSheet.create({
+	container: {
+		flexDirection: "row",
+		alignItems: "center",
+		gap: 12,
+	},
+	text: {
+		color: "#ff4444",
+		fontSize: 16,
+	},
+});
