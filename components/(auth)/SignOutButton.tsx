@@ -2,6 +2,7 @@ import { TouchableOpacity, StyleSheet, ViewStyle } from "react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { ThemedText } from "@/components/ThemedText";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { useRouter } from "expo-router";
 
 interface SignOutButtonProps {
 	containerStyle?: ViewStyle;
@@ -9,10 +10,15 @@ interface SignOutButtonProps {
 
 export function SignOutButton({ containerStyle }: SignOutButtonProps) {
 	const { signOut } = useAuth();
+	const router = useRouter();
+	const handleSignOut = async () => {
+		await signOut();
+		router.push("/");
+	};
 
 	return (
 		<TouchableOpacity
-			onPress={() => signOut()}
+			onPress={handleSignOut}
 			style={[styles.container, containerStyle]}
 		>
 			<IconSymbol
