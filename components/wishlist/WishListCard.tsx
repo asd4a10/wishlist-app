@@ -44,10 +44,8 @@ export default function WishListCard({ wish }: WishListCardProps) {
 				)}
 				<View style={styles.footer}>
 					{wish.price && <Text style={styles.price}>${wish.price}</Text>}
-					{wish.productUrl.length > 0 && (
-						<TouchableOpacity
-							onPress={() => Linking.openURL(wish.productUrl[0]!)}
-						>
+					{wish.productUrl && (
+						<TouchableOpacity onPress={() => Linking.openURL(wish.productUrl)}>
 							<Text style={styles.link}>View Item →</Text>
 						</TouchableOpacity>
 					)}

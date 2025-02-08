@@ -28,7 +28,7 @@ const initialWish: Wish = {
 	isPurchased: false,
 	targetDate: null,
 	price: null,
-	productUrl: [],
+	productUrl: "",
 	imageUrl: "",
 	createdAt: new Date(),
 };
@@ -58,7 +58,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 	};
 
 	const handleWishProductUrlUpdate = (newProductUrl: string) => {
-		setWish({ ...wish, productUrl: newProductUrl.split(",") });
+		setWish({ ...wish, productUrl: newProductUrl });
 	};
 
 	const handleWishImageUrlUpdate = (newImageUrl: string) => {
@@ -119,7 +119,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 						<Text style={styles.wishTitleText}>Product URL</Text>
 						<TextInput
 							style={styles.wishTitleInput}
-							value={wish.productUrl.join(", ") || ""}
+							value={wish.productUrl}
 							onChangeText={handleWishProductUrlUpdate}
 							placeholder="https://www.amazon.com/products/1234567890 (optional)"
 							placeholderTextColor="gray"

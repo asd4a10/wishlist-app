@@ -15,7 +15,7 @@ const testWish: Wish = {
 	isPurchased: false,
 	targetDate: new Date("2025-02-01"),
 	price: 100,
-	productUrl: ["https://www.google.com"],
+	productUrl: "https://www.google.com",
 	imageUrl:
 		"https://hips.hearstapps.com/hmg-prod/images/google-pixel-9-review-lead-66c8a74805258.jpg?crop=0.669xw:1.00xh;0.166xw,0&resize=1200:*",
 	createdAt: new Date(),

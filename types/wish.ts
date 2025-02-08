@@ -5,7 +5,7 @@ export type Wish = {
 	isPurchased: boolean;
 	targetDate: Date | null;
 	price: number | null;
-	productUrl: string[];
+	productUrl: string;
 	imageUrl: string | null;
 	createdAt: Date;
 };
