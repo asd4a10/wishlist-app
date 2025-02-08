@@ -8,10 +8,12 @@ import {
 import { Link, Redirect, router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
+import { SocialSignInButtons } from "@/components/(auth)/SocialSignInButtons";
 
 const BG_IMAGE_URL =
-	"https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=1974&auto=format&fit=crop";
-
+	// "https://w0.peakpx.com/wallpaper/294/128/HD-wallpaper-moon-night-stars-sky-full-moon.jpg";
+	// "https://img.freepik.com/free-photo/beautiful-constellations-sky-full-stars_23-2149988813.jpg";
+	"https://external-preview.redd.it/ZT4ic2-4DzUDhPeiVyk7Br7HMfF0z6hxD8LCP7l4zVA.jpg?width=1080&crop=smart&auto=webp&s=72023798bdf1f54c823c1bc56ae6ec77cf33de3d";
 export default function HomeScreen() {
 	return (
 		<>
@@ -23,7 +25,7 @@ export default function HomeScreen() {
 					source={{ uri: BG_IMAGE_URL }}
 					style={styles.container}
 					resizeMode="cover"
-					blurRadius={2}
+					// blurRadius={1}
 				>
 					<LinearGradient
 						colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.8)"]}
@@ -49,6 +51,8 @@ export default function HomeScreen() {
 										<Text style={styles.signUpText}>Create Account</Text>
 									</TouchableOpacity>
 								</Link>
+
+								<SocialSignInButtons />
 							</View>
 
 							<Text style={styles.terms}>

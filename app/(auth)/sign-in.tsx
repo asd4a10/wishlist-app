@@ -14,7 +14,7 @@ import { useSignIn } from "@clerk/clerk-expo";
 import { useState } from "react";
 
 const BG_IMAGE_URL =
-	"https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop";
+	"https://external-preview.redd.it/ZT4ic2-4DzUDhPeiVyk7Br7HMfF0z6hxD8LCP7l4zVA.jpg?width=1080&crop=smart&auto=webp&s=72023798bdf1f54c823c1bc56ae6ec77cf33de3d";
 
 export default function SignInScreen() {
 	const { signIn, setActive, isLoaded } = useSignIn();
@@ -45,7 +45,7 @@ export default function SignInScreen() {
 			source={{ uri: BG_IMAGE_URL }}
 			style={styles.container}
 			resizeMode="cover"
-			blurRadius={2}
+			// blurRadius={2}
 		>
 			<LinearGradient
 				colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.8)"]}
