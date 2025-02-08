@@ -89,82 +89,79 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 				{/* {showUrlFetcher ? (
 					<ProductURLFetcher />
 				) : ( */}
-					<KeyboardAvoidingView behavior="padding" style={styles.modalContent}>
-						<View style={styles.modalContent}>
-							{/* <Text style={styles.modalTitle}>Add a Wish</Text> */}
-							<Text style={styles.wishTitleText}>What do you want?</Text>
-							<TextInput
-								style={styles.wishTitleInput}
-								value={wish.title}
-								onChangeText={handleWishTitleUpdate}
-								placeholder="Macbook Pro"
-								placeholderTextColor="gray"
-							/>
-							<Text style={styles.wishTitleText}>Describe it</Text>
-							<TextInput
-								style={styles.wishTitleInput}
-								value={wish.description || ""}
-								onChangeText={handleWishDescriptionUpdate}
-								placeholder="16GB RAM, 1TB SSD, M3 chip (optional)"
-								placeholderTextColor="gray"
-							/>
-							<Text style={styles.wishTitleText}>Price</Text>
-							<TextInput
-								style={styles.wishTitleInput}
-								value={wish.price?.toString() || ""}
-								onChangeText={handleWishPriceUpdate}
-								placeholder="$1000 (optional)"
-								placeholderTextColor="gray"
-							/>
-							<Text style={styles.wishTitleText}>Product URL</Text>
-							<TextInput
-								style={styles.wishTitleInput}
-								value={wish.productUrl.join(", ") || ""}
-								onChangeText={handleWishProductUrlUpdate}
-								placeholder="https://www.amazon.com/products/1234567890 (optional)"
-								placeholderTextColor="gray"
-							/>
-							<Text style={styles.wishTitleText}>Image URL</Text>
-							<TextInput
-								style={styles.wishTitleInput}
-								value={wish.imageUrl || ""}
-								onChangeText={handleWishImageUrlUpdate}
-								placeholder="https://www.amazon.com/products/1234567890 (optional)"
-								placeholderTextColor="gray"
-							/>
-							<BouncyCheckbox
-								textStyle={styles.checkbox}
-								isChecked={isDeadlineVisible}
-								onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
-								text="Target date"
-								size={25}
-								fillColor="white"
-								iconStyle={{ borderColor: "white" }}
-								innerIconStyle={{ borderWidth: 2, backgroundColor: "black" }}
-								checkIconImageSource={undefined}
-							/>
-							<View style={styles.datePickerContainer}>
-								{isDeadlineVisible && (
-									<DateTimePicker
-										date={wish.targetDate || new Date()}
-										onChange={(params) =>
-											handleWishTargetDateUpdate(params.date)
-										}
-										mode="single"
-										headerButtonColor="white"
-										headerTextStyle={styles.defaultTextStyle}
-										calendarTextStyle={styles.defaultTextStyle}
-										selectedTextStyle={styles.defaultTextStyle}
-										todayTextStyle={styles.defaultTextStyle}
-										weekDaysTextStyle={styles.defaultTextStyle}
-										monthContainerStyle={styles.monthYearContainerStyle}
-										yearContainerStyle={styles.monthYearContainerStyle}
-									/>
-								)}
-							</View>
+				<KeyboardAvoidingView behavior="padding" style={styles.modalContent}>
+					<View style={styles.modalContent}>
+						{/* <Text style={styles.modalTitle}>Add a Wish</Text> */}
+						<Text style={styles.wishTitleText}>What do you want?</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.title}
+							onChangeText={handleWishTitleUpdate}
+							placeholder="Macbook Pro"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Describe it</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.description || ""}
+							onChangeText={handleWishDescriptionUpdate}
+							placeholder="16GB RAM, 1TB SSD, M3 chip (optional)"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Price</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.price?.toString() || ""}
+							onChangeText={handleWishPriceUpdate}
+							placeholder="$1000 (optional)"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Product URL</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.productUrl.join(", ") || ""}
+							onChangeText={handleWishProductUrlUpdate}
+							placeholder="https://www.amazon.com/products/1234567890 (optional)"
+							placeholderTextColor="gray"
+						/>
+						<Text style={styles.wishTitleText}>Image URL</Text>
+						<TextInput
+							style={styles.wishTitleInput}
+							value={wish.imageUrl || ""}
+							onChangeText={handleWishImageUrlUpdate}
+							placeholder="https://www.amazon.com/products/1234567890 (optional)"
+							placeholderTextColor="gray"
+						/>
+						<BouncyCheckbox
+							textStyle={styles.checkbox}
+							isChecked={isDeadlineVisible}
+							onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
+							text="Target date"
+							size={25}
+							fillColor="white"
+							iconStyle={{ borderColor: "white" }}
+							innerIconStyle={{ borderWidth: 2, backgroundColor: "black" }}
+							checkIconImageSource={undefined}
+						/>
+						<View style={styles.datePickerContainer}>
+							{isDeadlineVisible && (
+								<DateTimePicker
+									date={wish.targetDate || new Date()}
+									onChange={(params) => handleWishTargetDateUpdate(params.date)}
+									mode="single"
+									headerButtonColor="white"
+									headerTextStyle={styles.defaultTextStyle}
+									calendarTextStyle={styles.defaultTextStyle}
+									selectedTextStyle={styles.defaultTextStyle}
+									todayTextStyle={styles.defaultTextStyle}
+									weekDaysTextStyle={styles.defaultTextStyle}
+									monthContainerStyle={styles.monthYearContainerStyle}
+									yearContainerStyle={styles.monthYearContainerStyle}
+								/>
+							)}
 						</View>
-					</KeyboardAvoidingView>
-				)}
+					</View>
+				</KeyboardAvoidingView>
 			</ScrollView>
 			<View style={styles.addWishButtonContainer}>
 				<TouchableOpacity style={styles.addWishButton} onPress={handleSave}>
