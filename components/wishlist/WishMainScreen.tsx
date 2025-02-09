@@ -1,29 +1,31 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Text, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/store/store";
+import { fetchWishes, addWish } from "@/store/features/wishes/wishesSlice";
+import { useUser } from "@clerk/clerk-expo";
 
 import { WishModal } from "@/components/WishModal";
-import { Wish } from "@/types/wish";
 import { WishList } from "@/components/wishlist/WishList";
 
-const testWish: Wish = {
-	id: "1",
-	title: "Google Pixel 8",
-	description: "Google Pixel 8",
-	isPurchased: false,
-	targetDate: new Date("2025-02-01"),
-	price: 100,
-	productUrl: "https://www.google.com",
-	imageUrl:
-		"https://hips.hearstapps.com/hmg-prod/images/google-pixel-9-review-lead-66c8a74805258.jpg?crop=0.669xw:1.00xh;0.166xw,0&resize=1200:*",
-	createdAt: new Date(),
-};
-
 export default function WishlistScreen() {
-	const [wishList, setWishList] = useState<Wish[]>([testWish]);
+	const dispatch = useDispatch<AppDispatch>();
+	const { user } = useUser();
+	const {
+		items: wishList,
+		status,
+		error,
+	} = useSelector((state: RootState) => state.wishes);
 	const [isModalVisible, setIsModalVisible] = useState(false);
+
+	useEffect(() => {
+		if (status === "idle" && user?.id) {
+			dispatch(fetchWishes(user.id));
+		}
+	}, [dispatch, status, user?.id]);
 
 	return (
 		<ThemedView style={styles.container}>
@@ -33,13 +35,16 @@ export default function WishlistScreen() {
 				lightColor="#eee"
 				darkColor="rgba(255,255,255,0.1)"
 			/> */}
-			{wishList.length == 0 && (
-				<ThemedText>
-					Your future features and wishes will appear here!
-				</ThemedText>
+			{status === "loading" && (
+				<Text style={styles.loadingText}>Loading wishes...</Text>
+			)}
+			{status === "failed" && (
+				<Text style={styles.errorText}>Error: {error}</Text>
 			)}
 			{/* TODO: Display wish list */}
-			<WishList wishes={wishList} onAddWish={() => setIsModalVisible(true)} />
+			{status === "succeeded" && (
+				<WishList wishes={wishList} onAddWish={() => setIsModalVisible(true)} />
+			)}
 			{/* floating button */}
 			<TouchableOpacity
 				style={styles.floatingButton}
@@ -54,7 +59,7 @@ export default function WishlistScreen() {
 				isVisible={isModalVisible}
 				onClose={() => setIsModalVisible(false)}
 				onSave={(newWish) => {
-					setWishList([...wishList, newWish]);
+					dispatch(addWish(newWish));
 					setIsModalVisible(false);
 				}}
 			/>
@@ -174,5 +179,15 @@ const styles = StyleSheet.create({
 	},
 	checkbox: {
 		textDecorationLine: "none",
+	},
+	loadingText: {
+		color: "white",
+		fontSize: 16,
+		fontWeight: "bold",
+	},
+	errorText: {
+		color: "white",
+		fontSize: 16,
+		fontWeight: "bold",
 	},
 });

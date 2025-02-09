@@ -3,9 +3,9 @@ export type Wish = {
 	title: string;
 	description: string | null;
 	isPurchased: boolean;
-	targetDate: Date | null;
+	targetDate: string | null;
 	price: number | null;
 	productUrl: string;
 	imageUrl: string | null;
-	createdAt: Date;
+	createdAt: string;
 };

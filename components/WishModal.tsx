@@ -30,7 +30,7 @@ const initialWish: Wish = {
 	price: null,
 	productUrl: "",
 	imageUrl: "",
-	createdAt: new Date(),
+	createdAt: new Date().toISOString(),
 };
 
 export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
@@ -49,8 +49,8 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 		setWish({ ...wish, description: newDescription });
 	};
 
-	const handleWishTargetDateUpdate = (newTargetDate: Date | null) => {
-		setWish({ ...wish, targetDate: newTargetDate });
+	const handleWishTargetDateUpdate = (newTargetDate: Date) => {
+		setWish({ ...wish, targetDate: newTargetDate.toISOString() });
 	};
 
 	const handleWishPriceUpdate = (newPrice: string) => {
@@ -146,7 +146,9 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 						<View style={styles.datePickerContainer}>
 							{isDeadlineVisible && (
 								<DateTimePicker
-									date={wish.targetDate || new Date()}
+									date={
+										wish.targetDate ? new Date(wish.targetDate) : new Date()
+									}
 									onChange={(params) => handleWishTargetDateUpdate(params.date)}
 									mode="single"
 									headerButtonColor="white"
