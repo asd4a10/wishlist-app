@@ -67,7 +67,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 
 	const handleSave = () => {
 		if (wish.title) {
-			onSave({ ...wish, id: Date.now().toString() });
+			onSave({ ...wish });
 			setWish(initialWish);
 			setIsDeadlineVisible(false);
 		}

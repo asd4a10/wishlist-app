@@ -34,14 +34,36 @@ export const fetchWishes = createAsyncThunk(
 	}
 );
 
+export const createWish = createAsyncThunk(
+	"wishes/createWish",
+	async ({ wish, username }: { wish: Wish; username: string }) => {
+		const wishData = {
+			...wish,
+			username,
+		};
+		console.log("createWish wishData", wishData);
+		const response = await fetch(API_URL, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(wishData),
+		});
+
+		if (!response.ok) {
+			console.log("createWish error response", response);
+			throw new Error("Failed to create wish");
+		}
+
+		const data = await response.json();
+		return data;
+	}
+);
+
 export const wishesSlice = createSlice({
 	name: "wishes",
 	initialState,
-	reducers: {
-		addWish: (state, action) => {
-			state.items.push(action.payload);
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder
 			.addCase(fetchWishes.pending, (state) => {
@@ -54,9 +76,19 @@ export const wishesSlice = createSlice({
 			.addCase(fetchWishes.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message || "Failed to fetch wishes";
+			})
+			.addCase(createWish.pending, (state) => {
+				state.status = "loading";
+			})
+			.addCase(createWish.fulfilled, (state, action) => {
+				state.status = "succeeded";
+				state.items.push(action.payload);
+			})
+			.addCase(createWish.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message || "Failed to create wish";
 			});
 	},
 });
 
-export const { addWish } = wishesSlice.actions;
 export default wishesSlice.reducer;

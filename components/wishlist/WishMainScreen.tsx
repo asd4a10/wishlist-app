@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { fetchWishes, addWish } from "@/store/features/wishes/wishesSlice";
+import { fetchWishes, createWish } from "@/store/features/wishes/wishesSlice";
 import { useUser } from "@clerk/clerk-expo";
 
 import { WishModal } from "@/components/WishModal";
@@ -59,8 +59,10 @@ export default function WishlistScreen() {
 				isVisible={isModalVisible}
 				onClose={() => setIsModalVisible(false)}
 				onSave={(newWish) => {
-					dispatch(addWish(newWish));
-					setIsModalVisible(false);
+					if (user?.id) {
+						dispatch(createWish({ wish: newWish, username: user.id }));
+						setIsModalVisible(false);
+					}
 				}}
 			/>
 		</ThemedView>
