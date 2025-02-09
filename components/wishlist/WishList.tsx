@@ -18,9 +18,10 @@ type ViewMode = "grid" | "list" | "timeline";
 interface WishListProps {
 	wishes: Wish[];
 	onAddWish: () => void;
+	onEditWish: (wish: Wish) => void;
 }
 
-export function WishList({ wishes, onAddWish }: WishListProps) {
+export function WishList({ wishes, onAddWish, onEditWish }: WishListProps) {
 	const [viewMode, setViewMode] = useState<ViewMode>("list");
 
 	// Sort wishes by target date for timeline view
@@ -142,7 +143,7 @@ export function WishList({ wishes, onAddWish }: WishListProps) {
 				{wishes.length == 0 && <AddWishCard onPress={onAddWish} />}
 				{wishes.map((wish) => (
 					<View key={wish.id}>
-						<WishListCard wish={wish} />
+						<WishListCard wish={wish} onEdit={onEditWish} />
 					</View>
 				))}
 			</View>

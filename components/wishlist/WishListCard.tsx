@@ -7,9 +7,18 @@ import {
 	Linking,
 } from "react-native";
 import { Wish } from "@/types/wish";
+import {
+	GestureHandlerRootView,
+	Swipeable,
+} from "react-native-gesture-handler";
+import { useDispatch } from "react-redux";
+import { deleteWish } from "@/store/features/wishes/wishesSlice";
+import { AppDispatch } from "@/store/store";
+import { useRef } from "react";
 
 interface WishListCardProps {
 	wish: Wish;
+	onEdit: (wish: Wish) => void;
 }
 
 const formatDate = (date: Date) => {
@@ -20,39 +29,81 @@ const formatDate = (date: Date) => {
 	});
 };
 
-export default function WishListCard({ wish }: WishListCardProps) {
-	return (
-		<View style={styles.card}>
-			{/* {wish.imageUrl && (
-				<View style={styles.imageContainer}>
-					<Image source={{ uri: wish.imageUrl }} style={styles.image} />
-				</View>
-			)} */}
-			<View style={styles.contentContainer}>
-				<View style={styles.header}>
-					<Text style={styles.title}>{wish.title}</Text>
-					{wish.targetDate && (
-						<Text style={styles.date}>
-							{formatDate(new Date(wish.targetDate))}
-						</Text>
-					)}
-					{!wish.targetDate && <Text style={styles.date}>Any time</Text>}
-				</View>
-				{wish.description && (
-					<Text style={styles.description} numberOfLines={2}>
-						{wish.description}
-					</Text>
-				)}
-				<View style={styles.footer}>
-					{wish.price && <Text style={styles.price}>${wish.price}</Text>}
-					{wish.productUrl && (
-						<TouchableOpacity onPress={() => Linking.openURL(wish.productUrl)}>
-							<Text style={styles.link}>View in Store →</Text>
-						</TouchableOpacity>
-					)}
-				</View>
+export default function WishListCard({ wish, onEdit }: WishListCardProps) {
+	const dispatch = useDispatch<AppDispatch>();
+	const swipeableRef = useRef<Swipeable>(null);
+
+	const closeSwipeable = () => {
+		swipeableRef.current?.close();
+	};
+
+	const handleEdit = () => {
+		closeSwipeable();
+		onEdit(wish);
+	};
+
+	const handleDelete = () => {
+		closeSwipeable();
+		dispatch(deleteWish(wish.id));
+	};
+
+	const renderRightActions = () => {
+		return (
+			<View style={styles.rightActions}>
+				<TouchableOpacity
+					style={[styles.action, styles.editAction]}
+					onPress={handleEdit}
+				>
+					<Text style={styles.actionText}>Edit</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={[styles.action, styles.deleteAction]}
+					onPress={handleDelete}
+				>
+					<Text style={styles.actionText}>Delete</Text>
+				</TouchableOpacity>
 			</View>
-		</View>
+		);
+	};
+
+	return (
+		<GestureHandlerRootView>
+			<Swipeable ref={swipeableRef} renderRightActions={renderRightActions}>
+				<View style={styles.card}>
+					{/* {wish.imageUrl && (
+						<View style={styles.imageContainer}>
+							<Image source={{ uri: wish.imageUrl }} style={styles.image} />
+						</View>
+					)} */}
+					<View style={styles.contentContainer}>
+						<View style={styles.header}>
+							<Text style={styles.title}>{wish.title}</Text>
+							{wish.targetDate && (
+								<Text style={styles.date}>
+									{formatDate(new Date(wish.targetDate))}
+								</Text>
+							)}
+							{!wish.targetDate && <Text style={styles.date}>Any time</Text>}
+						</View>
+						{wish.description && (
+							<Text style={styles.description} numberOfLines={2}>
+								{wish.description}
+							</Text>
+						)}
+						<View style={styles.footer}>
+							{wish.price && <Text style={styles.price}>${wish.price}</Text>}
+							{wish.productUrl && (
+								<TouchableOpacity
+									onPress={() => Linking.openURL(wish.productUrl)}
+								>
+									<Text style={styles.link}>View in Store →</Text>
+								</TouchableOpacity>
+							)}
+						</View>
+					</View>
+				</View>
+			</Swipeable>
+		</GestureHandlerRootView>
 	);
 }
 
@@ -67,8 +118,8 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 	},
 	imageContainer: {
-		width: 200,
-		height: 200,
+		width: 70,
+		height: 70,
 	},
 	image: {
 		width: "100%",
@@ -123,5 +174,26 @@ const styles = StyleSheet.create({
 	link: {
 		color: "#3b82f6",
 		fontSize: 14,
+	},
+	rightActions: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginVertical: 10,
+	},
+	action: {
+		justifyContent: "center",
+		alignItems: "center",
+		width: 75,
+		height: "100%",
+	},
+	editAction: {
+		backgroundColor: "#2196F3",
+	},
+	deleteAction: {
+		backgroundColor: "#F44336",
+	},
+	actionText: {
+		color: "white",
+		fontWeight: "bold",
 	},
 });

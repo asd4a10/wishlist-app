@@ -60,6 +60,41 @@ export const createWish = createAsyncThunk(
 	}
 );
 
+export const deleteWish = createAsyncThunk(
+	"wishes/deleteWish",
+	async (wishId: string) => {
+		const response = await fetch(`${API_URL}/${wishId}`, {
+			method: "DELETE",
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to delete wish");
+		}
+
+		return wishId;
+	}
+);
+
+export const updateWish = createAsyncThunk(
+	"wishes/updateWish",
+	async ({ wish, username }: { wish: Wish; username: string }) => {
+		const response = await fetch(`${API_URL}/${wish.id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ ...wish, username }),
+		});
+
+		if (!response.ok) {
+			throw new Error("Failed to update wish");
+		}
+
+		const data = await response.json();
+		return data;
+	}
+);
+
 export const wishesSlice = createSlice({
 	name: "wishes",
 	initialState,
@@ -87,6 +122,25 @@ export const wishesSlice = createSlice({
 			.addCase(createWish.rejected, (state, action) => {
 				state.status = "failed";
 				state.error = action.error.message || "Failed to create wish";
+			})
+			.addCase(deleteWish.fulfilled, (state, action) => {
+				state.items = state.items.filter((wish) => wish.id !== action.payload);
+			})
+			.addCase(deleteWish.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message || "Failed to delete wish";
+			})
+			.addCase(updateWish.fulfilled, (state, action) => {
+				const index = state.items.findIndex(
+					(wish) => wish.id === action.payload.id
+				);
+				if (index !== -1) {
+					state.items[index] = action.payload;
+				}
+			})
+			.addCase(updateWish.rejected, (state, action) => {
+				state.status = "failed";
+				state.error = action.error.message || "Failed to update wish";
 			});
 	},
 });

@@ -12,16 +12,17 @@ import DateTimePicker from "react-native-ui-datepicker";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import dayjs from "dayjs";
 import { Wish } from "@/types/wish"; // You'll need to create this type file
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { ProductURLFetcher } from "./ProductURLFetcher";
 type WishModalProps = {
 	isVisible: boolean;
 	onClose: () => void;
 	onSave: (newWish: Wish) => void;
+	initialWish: Wish | null;
 };
 
-const initialWish: Wish = {
+const initialCreateWish: Wish = {
 	id: "",
 	title: "",
 	description: "",
@@ -33,12 +34,28 @@ const initialWish: Wish = {
 	createdAt: new Date().toISOString(),
 };
 
-export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
+export function WishModal({
+	isVisible,
+	onClose,
+	onSave,
+	initialWish,
+}: WishModalProps) {
 	const [showUrlFetcher, setShowUrlFetcher] = useState(true);
-	const [wish, setWish] = useState<Wish>(initialWish);
+	const [wish, setWish] = useState<Wish>(initialCreateWish);
 	const [isFormDisabled, setIsFormDisabled] = useState(false);
 	const [date, setDate] = useState<dayjs.Dayjs>(dayjs());
 	const [isDeadlineVisible, setIsDeadlineVisible] = useState(false);
+
+	useEffect(() => {
+		if (initialWish) {
+			setWish(initialWish);
+			if (initialWish.targetDate) {
+				setIsDeadlineVisible(true);
+			}
+		} else {
+			setWish(initialCreateWish);
+		}
+	}, [initialWish]);
 
 	const handleWishTitleUpdate = (newTitle: string) => {
 		setWish({ ...wish, title: newTitle });
@@ -51,6 +68,13 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 
 	const handleWishTargetDateUpdate = (newTargetDate: Date) => {
 		setWish({ ...wish, targetDate: newTargetDate.toISOString() });
+	};
+
+	const handleTargetDateToggle = () => {
+		if (isDeadlineVisible) {
+			setWish({ ...wish, targetDate: null });
+		}
+		setIsDeadlineVisible(!isDeadlineVisible);
 	};
 
 	const handleWishPriceUpdate = (newPrice: string) => {
@@ -68,7 +92,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 	const handleSave = () => {
 		if (wish.title) {
 			onSave({ ...wish });
-			setWish(initialWish);
+			setWish(initialCreateWish);
 			setIsDeadlineVisible(false);
 		}
 	};
@@ -135,7 +159,7 @@ export function WishModal({ isVisible, onClose, onSave }: WishModalProps) {
 						<BouncyCheckbox
 							textStyle={styles.checkbox}
 							isChecked={isDeadlineVisible}
-							onPress={() => setIsDeadlineVisible(!isDeadlineVisible)}
+							onPress={handleTargetDateToggle}
 							text="Target date"
 							size={25}
 							fillColor="white"

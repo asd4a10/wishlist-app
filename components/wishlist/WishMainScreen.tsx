@@ -5,11 +5,16 @@ import { useState, useEffect } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { fetchWishes, createWish } from "@/store/features/wishes/wishesSlice";
+import {
+	fetchWishes,
+	createWish,
+	updateWish,
+} from "@/store/features/wishes/wishesSlice";
 import { useUser } from "@clerk/clerk-expo";
 
 import { WishModal } from "@/components/WishModal";
 import { WishList } from "@/components/wishlist/WishList";
+import { Wish } from "@/types/wish";
 
 export default function WishlistScreen() {
 	const dispatch = useDispatch<AppDispatch>();
@@ -20,12 +25,19 @@ export default function WishlistScreen() {
 		error,
 	} = useSelector((state: RootState) => state.wishes);
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
 
 	useEffect(() => {
 		if (status === "idle" && user?.id) {
 			dispatch(fetchWishes(user.id));
 		}
 	}, [dispatch, status, user?.id]);
+
+	const handleEdit = (wish: Wish) => {
+		setSelectedWish(wish);
+		console.log("selected wish", wish);
+		setIsModalVisible(true);
+	};
 
 	return (
 		<ThemedView style={styles.container}>
@@ -43,7 +55,11 @@ export default function WishlistScreen() {
 			)}
 			{/* TODO: Display wish list */}
 			{status === "succeeded" && (
-				<WishList wishes={wishList} onAddWish={() => setIsModalVisible(true)} />
+				<WishList
+					wishes={wishList}
+					onAddWish={() => setIsModalVisible(true)}
+					onEditWish={handleEdit}
+				/>
 			)}
 			{/* floating button */}
 			<TouchableOpacity
@@ -57,11 +73,20 @@ export default function WishlistScreen() {
 			{/* TODO: Add wish modal */}
 			<WishModal
 				isVisible={isModalVisible}
-				onClose={() => setIsModalVisible(false)}
-				onSave={(newWish) => {
+				initialWish={selectedWish}
+				onClose={() => {
+					setIsModalVisible(false);
+					setSelectedWish(null);
+				}}
+				onSave={(updatedWish) => {
 					if (user?.id) {
-						dispatch(createWish({ wish: newWish, username: user.id }));
+						if (selectedWish) {
+							dispatch(updateWish({ wish: updatedWish, username: user.id }));
+						} else {
+							dispatch(createWish({ wish: updatedWish, username: user.id }));
+						}
 						setIsModalVisible(false);
+						setSelectedWish(null);
 					}
 				}}
 			/>
