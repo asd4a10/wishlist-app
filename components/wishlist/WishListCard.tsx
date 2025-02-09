@@ -36,6 +36,7 @@ export default function WishListCard({ wish }: WishListCardProps) {
 							{formatDate(new Date(wish.targetDate))}
 						</Text>
 					)}
+					{!wish.targetDate && <Text style={styles.date}>Any time</Text>}
 				</View>
 				{wish.description && (
 					<Text style={styles.description} numberOfLines={2}>
@@ -46,7 +47,7 @@ export default function WishListCard({ wish }: WishListCardProps) {
 					{wish.price && <Text style={styles.price}>${wish.price}</Text>}
 					{wish.productUrl && (
 						<TouchableOpacity onPress={() => Linking.openURL(wish.productUrl)}>
-							<Text style={styles.link}>View Item →</Text>
+							<Text style={styles.link}>View in Store →</Text>
 						</TouchableOpacity>
 					)}
 				</View>
