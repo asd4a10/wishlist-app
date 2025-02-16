@@ -1,7 +1,7 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, RefreshControl, ScrollView } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -27,6 +27,16 @@ export default function WishlistScreen() {
 	} = useSelector((state: RootState) => state.wishes);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
+	const [refreshing, setRefreshing] = useState(false);
+
+	const onRefresh = useCallback(() => {
+		if (user?.id) {
+			setRefreshing(true);
+			dispatch(fetchWishes(user.id)).finally(() => {
+				setRefreshing(false);
+			});
+		}
+	}, [dispatch, user?.id]);
 
 	useEffect(() => {
 		if (status === "idle" && user?.id) {
@@ -43,26 +53,39 @@ export default function WishlistScreen() {
 	return (
 		<ThemedView style={styles.container}>
 			<NetworkStatus />
-			<ThemedText style={styles.title}>Your Wishlist</ThemedText>
-			{/* <ThemedView
-				style={styles.separator}
-				lightColor="#eee"
-				darkColor="rgba(255,255,255,0.1)"
-			/> */}
-			{status === "loading" && (
-				<Text style={styles.loadingText}>Loading wishes...</Text>
-			)}
-			{status === "failed" && (
-				<Text style={styles.errorText}>Error: {error}</Text>
-			)}
-			{/* TODO: Display wish list */}
-			{status === "succeeded" && (
-				<WishList
-					wishes={wishList}
-					onAddWish={() => setIsModalVisible(true)}
-					onEditWish={handleEdit}
-				/>
-			)}
+			<ScrollView
+				style={styles.scrollView}
+				contentContainerStyle={styles.scrollContent}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor="#fff" // for iOS
+						colors={["#fff"]} // for Android
+					/>
+				}
+			>
+				<ThemedText style={styles.title}>Your Wishlist</ThemedText>
+				{/* <ThemedView
+					style={styles.separator}
+					lightColor="#eee"
+					darkColor="rgba(255,255,255,0.1)"
+				/> */}
+				{status === "loading" && !refreshing && (
+					<Text style={styles.loadingText}>Loading wishes...</Text>
+				)}
+				{status === "failed" && (
+					<Text style={styles.errorText}>Error: {error}</Text>
+				)}
+				{/* TODO: Display wish list */}
+				{status === "succeeded" && (
+					<WishList
+						wishes={wishList}
+						onAddWish={() => setIsModalVisible(true)}
+						onEditWish={handleEdit}
+					/>
+				)}
+			</ScrollView>
 			{/* floating button */}
 			<TouchableOpacity
 				style={styles.floatingButton}
@@ -131,9 +154,12 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		fontWeight: "bold",
 	},
+	scrollView: {
+		flex: 1,
+		width: "100%",
+	},
 	scrollContent: {
 		flexGrow: 1,
-		justifyContent: "center",
 		alignItems: "center",
 	},
 	modalContent: {
