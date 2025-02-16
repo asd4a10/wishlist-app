@@ -15,6 +15,7 @@ import { useUser } from "@clerk/clerk-expo";
 import { WishModal } from "@/components/WishModal";
 import { WishList } from "@/components/wishlist/WishList";
 import { Wish } from "@/types/wish";
+import { NetworkStatus } from "@/components/NetworkStatus";
 
 export default function WishlistScreen() {
 	const dispatch = useDispatch<AppDispatch>();
@@ -41,6 +42,7 @@ export default function WishlistScreen() {
 
 	return (
 		<ThemedView style={styles.container}>
+			<NetworkStatus />
 			<ThemedText style={styles.title}>Your Wishlist</ThemedText>
 			{/* <ThemedView
 				style={styles.separator}
