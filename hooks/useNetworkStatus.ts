@@ -7,6 +7,15 @@ export function useNetworkStatus() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		// Initial check
+		const checkConnection = async () => {
+			const netInfo = await NetInfo.fetch();
+			console.log("checkConnection", netInfo.isConnected);
+			dispatch(setNetworkStatus(netInfo.isConnected));
+		};
+		checkConnection();
+
+		// Subscribe to network state updates
 		const unsubscribe = NetInfo.addEventListener((state) => {
 			dispatch(setNetworkStatus(state.isConnected));
 		});

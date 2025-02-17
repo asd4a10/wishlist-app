@@ -9,13 +9,15 @@ import {
 	fetchWishes,
 	createWish,
 	updateWish,
+	syncPendingChanges,
 } from "@/store/features/wishes/wishesSlice";
 import { useUser } from "@clerk/clerk-expo";
+import { checkConnection, setupNetworkListener } from "@/utils/networkUtils";
+import { NetworkStatus } from "@/components/NetworkStatus";
 
 import { WishModal } from "@/components/WishModal";
 import { WishList } from "@/components/wishlist/WishList";
 import { Wish } from "@/types/wish";
-import { NetworkStatus } from "@/components/NetworkStatus";
 
 export default function WishlistScreen() {
 	const dispatch = useDispatch<AppDispatch>();
@@ -24,25 +26,50 @@ export default function WishlistScreen() {
 		items: wishList,
 		status,
 		error,
+		pendingChanges,
 	} = useSelector((state: RootState) => state.wishes);
+	const { isConnected } = useSelector((state: RootState) => state.network);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [selectedWish, setSelectedWish] = useState<Wish | null>(null);
 	const [refreshing, setRefreshing] = useState(false);
 
-	const onRefresh = useCallback(() => {
+	// Setup network listener
+	useEffect(() => {
+		const unsubscribe = setupNetworkListener(dispatch);
+		return () => unsubscribe();
+	}, [dispatch]);
+
+	// Handle network state changes
+	useEffect(() => {
+		if (isConnected && user?.id) {
+			if (
+				pendingChanges.creates.length > 0 ||
+				pendingChanges.updates.length > 0
+			) {
+				dispatch(syncPendingChanges(user.id));
+			} else {
+				dispatch(fetchWishes(user.id));
+			}
+		}
+	}, [isConnected, dispatch, user?.id, pendingChanges]);
+
+	const onRefresh = useCallback(async () => {
 		if (user?.id) {
 			setRefreshing(true);
-			dispatch(fetchWishes(user.id)).finally(() => {
-				setRefreshing(false);
-			});
-		}
-	}, [dispatch, user?.id]);
+			const isConnected = await checkConnection(dispatch);
 
-	useEffect(() => {
-		if (status === "idle" && user?.id) {
-			dispatch(fetchWishes(user.id));
+			if (isConnected) {
+				if (
+					pendingChanges.creates.length > 0 ||
+					pendingChanges.updates.length > 0
+				) {
+					await dispatch(syncPendingChanges(user.id));
+				}
+				await dispatch(fetchWishes(user.id));
+			}
+			setRefreshing(false);
 		}
-	}, [dispatch, status, user?.id]);
+	}, [dispatch, user?.id, pendingChanges]);
 
 	const handleEdit = (wish: Wish) => {
 		setSelectedWish(wish);
