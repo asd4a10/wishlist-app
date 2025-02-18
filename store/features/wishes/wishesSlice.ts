@@ -89,17 +89,23 @@ export const createWish = createAsyncThunk(
 
 export const deleteWish = createAsyncThunk(
 	"wishes/deleteWish",
-	async (wishId: string) => {
-		console.log("deleteWish wishId", wishId);
-		const response = await fetch(`${API_URL}/${wishId}`, {
-			method: "DELETE",
-		});
+	async (wishId: string, { dispatch, rejectWithValue }) => {
+		try {
+			console.log("deleteWish wishId", wishId);
+			const response = await fetch(`${API_URL}/${wishId}`, {
+				method: "DELETE",
+			});
 
-		if (!response.ok) {
-			throw new Error("Failed to delete wish");
+			if (!response.ok) {
+				throw new Error("Failed to delete wish");
+			}
+
+			return wishId;
+		} catch (error) {
+			// Store in pending changes if offline
+			dispatch(addPendingDelete(wishId));
+			return rejectWithValue("Stored delete for later sync");
 		}
-
-		return wishId;
 	}
 );
 
@@ -152,6 +158,11 @@ export const syncPendingChanges = createAsyncThunk(
 			await dispatch(updateWish({ wish, username }));
 		}
 
+		// Process deletes
+		for (const wishId of pendingChanges.deletes) {
+			await dispatch(deleteWish(wishId));
+		}
+
 		dispatch(clearPendingChanges());
 	}
 );
@@ -162,7 +173,7 @@ export const wishesSlice = createSlice({
 	reducers: {
 		addPendingCreate: (state, action) => {
 			state.pendingChanges.creates.push(action.payload);
-			state.items.push(action.payload); // Add to local items immediately
+			state.items.push(action.payload);
 		},
 		addPendingUpdate: (state, action) => {
 			state.pendingChanges.updates.push(action.payload);
@@ -170,8 +181,12 @@ export const wishesSlice = createSlice({
 				(item) => item.id === action.payload.id
 			);
 			if (index !== -1) {
-				state.items[index] = action.payload; // Update local item immediately
+				state.items[index] = action.payload;
 			}
+		},
+		addPendingDelete: (state, action) => {
+			state.pendingChanges.deletes.push(action.payload);
+			state.items = state.items.filter((item) => item.id !== action.payload);
 		},
 		clearPendingChanges: (state) => {
 			state.pendingChanges = {
@@ -208,10 +223,26 @@ export const wishesSlice = createSlice({
 				if (index !== -1) {
 					state.items[index] = action.payload;
 				}
+			})
+			.addCase(deleteWish.pending, (state, action) => {
+				// Optimistically remove the wish
+				state.items = state.items.filter((item) => item.id !== action.meta.arg);
+			})
+			.addCase(deleteWish.fulfilled, (state, action) => {
+				// Already removed in pending, no need to do anything
+			})
+			.addCase(deleteWish.rejected, (state, action) => {
+				// If offline, the wish is already removed and stored in pendingChanges
+				// If online and failed, we might want to show an error
+				state.error = "Failed to delete wish";
 			});
 	},
 });
 
-export const { addPendingCreate, addPendingUpdate, clearPendingChanges } =
-	wishesSlice.actions;
+export const {
+	addPendingCreate,
+	addPendingUpdate,
+	addPendingDelete,
+	clearPendingChanges,
+} = wishesSlice.actions;
 export default wishesSlice.reducer;

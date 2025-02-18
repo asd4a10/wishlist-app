@@ -116,7 +116,7 @@ export function WishModal({
 				<KeyboardAvoidingView behavior="padding" style={styles.modalContent}>
 					<View style={styles.modalContent}>
 						{/* <Text style={styles.modalTitle}>Add a Wish</Text> */}
-						<Text style={styles.wishTitleText}>What do you want?</Text>
+						<Text style={styles.wishTitleText}>What do you want?*</Text>
 						<TextInput
 							style={styles.wishTitleInput}
 							value={wish.title}
@@ -140,7 +140,7 @@ export function WishModal({
 							placeholder="$1000 (optional)"
 							placeholderTextColor="gray"
 						/>
-						<Text style={styles.wishTitleText}>Product URL</Text>
+						<Text style={styles.wishTitleText}>Store Link</Text>
 						<TextInput
 							style={styles.wishTitleInput}
 							value={wish.productUrl}
@@ -148,14 +148,14 @@ export function WishModal({
 							placeholder="https://www.amazon.com/products/1234567890 (optional)"
 							placeholderTextColor="gray"
 						/>
-						<Text style={styles.wishTitleText}>Image URL</Text>
+						{/* <Text style={styles.wishTitleText}>Image URL</Text>
 						<TextInput
 							style={styles.wishTitleInput}
 							value={wish.imageUrl || ""}
 							onChangeText={handleWishImageUrlUpdate}
 							placeholder="https://www.amazon.com/products/1234567890 (optional)"
 							placeholderTextColor="gray"
-						/>
+						/> */}
 						<BouncyCheckbox
 							textStyle={styles.checkbox}
 							isChecked={isDeadlineVisible}
