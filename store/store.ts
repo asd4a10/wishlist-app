@@ -12,6 +12,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import wishesReducer from "./features/wishes/wishesSlice";
 import networkReducer from "./features/network/networkSlice";
+import settingsReducer from "./settingsSlice";
 
 const persistConfig = {
 	key: "root",
@@ -21,11 +22,13 @@ const persistConfig = {
 };
 
 const persistedWishesReducer = persistReducer(persistConfig, wishesReducer);
+const persistedSettingsReducer = persistReducer(persistConfig, settingsReducer);
 
 export const store = configureStore({
 	reducer: {
 		wishes: persistedWishesReducer,
 		network: networkReducer,
+		settings: persistedSettingsReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

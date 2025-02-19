@@ -2,9 +2,11 @@ import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { SignOutButton } from "@/components/(auth)/SignOutButton";
 import { useUser } from "@clerk/clerk-expo";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Link, useRouter } from "expo-router";
 
 export default function SettingsScreen() {
 	const { user } = useUser();
+	const router = useRouter();
 
 	return (
 		<View style={styles.container}>
@@ -38,6 +40,15 @@ export default function SettingsScreen() {
 					<IconSymbol name="bell.fill" size={24} color="#666" />
 					<Text style={styles.settingsText}>Notifications</Text>
 				</TouchableOpacity>
+
+				<View style={styles.separator} />
+
+				<Link href="/(settings)/configuration" asChild>
+					<TouchableOpacity style={styles.settingsItem}>
+						<IconSymbol name="gearshape.fill" size={24} color="#666" />
+						<Text style={styles.settingsText}>Configuration</Text>
+					</TouchableOpacity>
+				</Link>
 
 				<View style={styles.separator} />
 

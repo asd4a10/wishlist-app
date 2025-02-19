@@ -11,10 +11,12 @@ import {
 	GestureHandlerRootView,
 	Swipeable,
 } from "react-native-gesture-handler";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteWish } from "@/store/features/wishes/wishesSlice";
 import { AppDispatch } from "@/store/store";
 import { useRef } from "react";
+import { formatPrice } from "@/utils/currency";
+import type { RootState } from "@/store/store";
 
 interface WishListCardProps {
 	wish: Wish;
@@ -32,6 +34,7 @@ const formatDate = (date: Date) => {
 export default function WishListCard({ wish, onEdit }: WishListCardProps) {
 	const dispatch = useDispatch<AppDispatch>();
 	const swipeableRef = useRef<Swipeable>(null);
+	const currency = useSelector((state: RootState) => state.settings.currency);
 
 	const closeSwipeable = () => {
 		swipeableRef.current?.close();
@@ -91,7 +94,11 @@ export default function WishListCard({ wish, onEdit }: WishListCardProps) {
 							</Text>
 						)}
 						<View style={styles.footer}>
-							{wish.price && <Text style={styles.price}>${wish.price}</Text>}
+							{wish.price && (
+								<Text style={styles.price}>
+									{formatPrice(wish.price, currency)}
+								</Text>
+							)}
 							{wish.productUrl && (
 								<TouchableOpacity
 									onPress={() => Linking.openURL(wish.productUrl)}
