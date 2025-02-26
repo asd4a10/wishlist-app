@@ -135,7 +135,13 @@ export function WishModal({
 						<Text style={styles.wishTitleText}>Price</Text>
 						<TextInput
 							style={styles.wishTitleInput}
-							value={wish.price?.toString() || ""}
+							value={
+								wish.price === null ||
+								wish.price === undefined ||
+								isNaN(wish.price)
+									? ""
+									: wish.price.toString()
+							}
 							onChangeText={handleWishPriceUpdate}
 							placeholder="$1000 (optional)"
 							placeholderTextColor="gray"
